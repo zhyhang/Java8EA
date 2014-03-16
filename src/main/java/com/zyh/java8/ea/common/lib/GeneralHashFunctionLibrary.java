@@ -19,7 +19,7 @@ package com.zyh.java8.ea.common.lib;
 */
 
 
-class GeneralHashFunctionLibrary
+public class GeneralHashFunctionLibrary
 {
 
 
@@ -54,7 +54,7 @@ class GeneralHashFunctionLibrary
    /* End Of JS Hash Function */
 
 
-   public long PJWHash(String str)
+   public static long PJWHash(String str)
    {
       long BitsInUnsignedInt = (long)(4 * 8);
       long ThreeQuarters     = (long)((BitsInUnsignedInt  * 3) / 4);
@@ -186,7 +186,7 @@ class GeneralHashFunctionLibrary
    /* End Of FNV Hash Function */
 
 
-   public long APHash(String str)
+   public static long APHash(String str)
    {
       long hash = 0xAAAAAAAA;
 
@@ -205,5 +205,53 @@ class GeneralHashFunctionLibrary
       return hash;
    }
    /* End Of AP Hash Function */
+   
+    public static long JDKHash(String str) {
+        long h = 1125899906842597L; // prime
+        int len = str.length();
+
+        for (int i = 0; i < len; i++) {
+            h = 31 * h + str.charAt(i);
+        }
+        return h;
+    }
+    
+    
+    	static final long[] byteTable = createLookupTable();
+	static final long HSTART = 0xBB40E64DA205B064L;
+	static final long HMULT = 7664345821815920749L;
+
+	private static long[] createLookupTable() {
+		long[] bTable = new long[256];
+		long h = 0x544B2FBACAAF1684L;
+		for (int i = 0; i < 256; i++) {
+			for (int j = 0; j < 31; j++) {
+				h = (h >>> 7) ^ h;
+				h = (h << 11) ^ h;
+				h = (h >>> 10) ^ h;
+			}
+			bTable[i] = h;
+		}
+		return bTable;
+	}
+        
+        /**
+         * From CSDN blog
+         * <a href="http://blog.csdn.net/scariii/article/details/7237042">http://blog.csdn.net/scariii/article/details/7237042</a>
+         * @param cs
+         * @return 
+         */
+	public static long CSDNHash(CharSequence cs) {
+		long h = HSTART;
+		final long hmult = HMULT;
+		final long[] ht = byteTable;
+		final int len = cs.length();
+		for (int i = 0; i < len; i++) {
+			char ch = cs.charAt(i);
+			h = (h * hmult) ^ ht[ch & 0xff];
+			h = (h * hmult) ^ ht[(ch >>> 8) & 0xff];
+		}
+		return h;
+	}
 
 }
